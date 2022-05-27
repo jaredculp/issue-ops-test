@@ -35,5 +35,5 @@ jobs:
             gh issue view "$GH_ISSUE" --json "body" --jq ".body" >> $GITHUB_ENV
             echo "- [ ] ${{ needs.build.outputs.build-label }}" >> $GITHUB_ENV
             echo 'EOF' >> $GITHUB_ENV
-            echo "$ISSUE_BODY" | gh issue edit $GH_ISSUE --body-file -
+            echo "${{ env.ISSUE_BODY }}" | gh issue edit $GH_ISSUE --body-file -
           fi
