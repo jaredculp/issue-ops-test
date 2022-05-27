@@ -22,6 +22,8 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
+      - uses: actions/checkout@v3
+      
       - name: Update issue
         run: |
           GH_ISSUE=$(gh issue list --label deploy-prod --limit 1 --json "number" --jq '.[0].number') 
