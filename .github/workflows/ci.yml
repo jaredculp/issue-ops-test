@@ -1,0 +1,19 @@
+name: CI
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      build-label: ${{ steps.create-build-label.outputs.build-label }}
+
+    steps:
+      - uses: actions/checkout@v3
+      
+      - id: create-build-label
+        run: |
+          echo "::set-output name=build-label::${{ github.run_number }}"
+
+      
