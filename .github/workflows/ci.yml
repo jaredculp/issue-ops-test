@@ -21,7 +21,14 @@ jobs:
     needs: build
     
     steps:
+      - name: Find existing issue
+        run: |
+          echo GH_ISSUE_TO_UPDATE=$(gh -H "Accept: application/vnd.github.v3+json" \
+          "/repos/${{ github.repository }}/issues?sort=created&labels=deploy-prod&per_page=1" \
+          | jq '.[0].id') >> $GITHUB_ENV
+          
       - name: Create an issue
+        if: ${{ !env.GH_ISSUE_TO_UPDATE }}
         uses: actions-ecosystem/action-create-issue@v1
         with:
           github_token: ${{ secrets.github_token }}
