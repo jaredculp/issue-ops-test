@@ -24,19 +24,24 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       
-      - name: Update issue
+      - name: Find issue
         run: |
-          GH_ISSUE=$(gh issue list --label deploy-prod --limit 1 --json "number" --jq '.[0].number') 
-          
-          if [ -z $GH_ISSUE ]; then
-            gh issue create --label deploy-prod --body "# Since deploying ${{ needs.build.outputs.build-label }} to production"
-          else 
-            echo 'ISSUE_BODY<<EOF' >> $GITHUB_ENV
-            gh issue view "$GH_ISSUE" --json "body" --jq ".body" >> $GITHUB_ENV
-            echo "- [ ] ${{ needs.build.outputs.build-label }}" >> $GITHUB_ENV
-            echo 'EOF' >> $GITHUB_ENV
-            echo "${{ env.ISSUE_BODY }}" | gh issue edit $GH_ISSUE --body-file -
-          fi
+         echo GH_ISSUE=$(gh issue list --label deploy-prod --limit 1 --json "number" --jq '.[0].number') >> $GITHUB_ENV
+         
+      - name: Create issue
+        if: ${{ !env.GH_ISSUE }}
+        run: |
+          gh issue create --label deploy-prod --body "# Since deploying ${{ needs.build.outputs.build-label }} to production"
 
-      - name: Debug
-        run: echo "${{ env.ISSUE_BODY }}"
+      - name: Get current issue body
+        if: ${{ env.GH_ISSUE }}
+        run: |
+          echo 'ISSUE_BODY<<EOF' >> $GITHUB_ENV
+          gh issue view "$GH_ISSUE" --json "body" --jq ".body" >> $GITHUB_ENV
+          echo "- [ ] ${{ needs.build.outputs.build-label }}" >> $GITHUB_ENV
+          echo 'EOF' >> $GITHUB_ENV
+
+      - name: Update issue
+        if: ${{ env.GH_ISSUE }}
+        run: |
+          echo "$ISSUE_BODY" | gh issue edit $GH_ISSUE --body-file -
