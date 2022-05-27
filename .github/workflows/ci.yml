@@ -22,6 +22,8 @@ jobs:
     
     steps:
       - name: Find existing issue
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo GH_ISSUE_TO_UPDATE=$(gh api -H "Accept: application/vnd.github.v3+json" \
           "/repos/${{ github.repository }}/issues?sort=created&labels=deploy-prod&per_page=1" \
