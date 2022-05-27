@@ -19,25 +19,16 @@ jobs:
   create-issue:
     runs-on: ubuntu-latest
     needs: build
-    
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: Find existing issue
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Update issue
         run: |
-          echo GH_ISSUE_TO_UPDATE=$(gh api -H "Accept: application/vnd.github.v3+json" \
-          "/repos/${{ github.repository }}/issues?sort=created&labels=deploy-prod&per_page=1" \
-          | jq '.[0].id') >> $GITHUB_ENV
+          GH_ISSUE=$(gh issue list --label deploy-prod --limit 1 --json "number" --jq '.[0].number) 
           
-      - name: Create an issue
-        if: ${{ !env.GH_ISSUE_TO_UPDATE }}
-        uses: actions-ecosystem/action-create-issue@v1
-        with:
-          github_token: ${{ secrets.github_token }}
-          title: ${{ needs.build.outputs.build-label }}
-          body: |
-            ## Since deployment of ${{ needs.build.outputs.build-label }}
-          labels: deploy-prod
-
-
-      
+          if [ -z $GH_ISSUE ]; then
+            gh issue create --label deploy-prod --body "# Since deploying ${{ needs.build.outputs.build-label }} to production"
+          else 
+            echo "$(gh issue view $GH_ISSUE --json "body" --jq '.body')\n\n- [ ] Another one\n" \
+            | gh issue edit $GH_ISSUE --body-file - 
+          fi
