@@ -15,5 +15,19 @@ jobs:
       - id: create-build-label
         run: |
           echo "::set-output name=build-label::${{ github.run_number }}"
+          
+  create-issue:
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
+      - name: Create an issue
+        uses: actions-ecosystem/action-create-issue@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          title: ${{ needs.build.outputs.build-label }}
+          body: |
+            ## Since deployment of ${{ needs.build.outputs.build-label }}
+
 
       
