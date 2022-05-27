@@ -31,9 +31,9 @@ jobs:
           if [ -z $GH_ISSUE ]; then
             gh issue create --label deploy-prod --body "# Since deploying ${{ needs.build.outputs.build-label }} to production"
           else 
-            echo "ISSUE_BODY<<EOF" >> $GITHUB_ENV
-            gh issue view $GH_ISSUE --json "body" --jq ".body" >> $GITHUB_ENV
+            echo 'ISSUE_BODY<<EOF' >> $GITHUB_ENV
+            gh issue view "$GH_ISSUE" --json "body" --jq ".body" >> $GITHUB_ENV
             echo "- [ ] ${{ needs.build.outputs.build-label }}" >> $GITHUB_ENV
-            echo "EOF" >> $GITHUB_ENV
+            echo 'EOF' >> $GITHUB_ENV
             echo "$ISSUE_BODY" | gh issue edit $GH_ISSUE --body-file -
           fi
