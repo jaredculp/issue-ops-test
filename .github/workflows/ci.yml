@@ -31,11 +31,6 @@ jobs:
           if [ -z $GH_ISSUE ]; then
             gh issue create --label deploy-prod --body "# Since deploying ${{ needs.build.outputs.build-label }} to production"
           else 
-            ISSUE_BODY=$(cat << EOF
-            `gh issue view $GH_ISSUE --json "body" --jq ".body"`
-            - [ ] ${{ needs.build.outputs.build-label }}
-            
-            EOF
-            )
-            echo $ISSUE_BODY | gh issue edit $GH_ISSUE --body-file - 
+            BODY=$(gh issue view $GH_ISSUE --json "body" --jq ".body")
+            echo "${BODY}\n- [ ] ${{ needs.build.outputs.build-label }}" | gh issue edit $GH_ISSUE --body-file -
           fi
