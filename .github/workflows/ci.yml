@@ -24,7 +24,7 @@ jobs:
     steps:
       - name: Update issue
         run: |
-          GH_ISSUE=$(gh issue list --label deploy-prod --limit 1 --json "number" --jq '.[0].number) 
+          GH_ISSUE=$(gh issue list --label deploy-prod --limit 1 --json "number" --jq '.[0].number') 
           
           if [ -z $GH_ISSUE ]; then
             gh issue create --label deploy-prod --body "# Since deploying ${{ needs.build.outputs.build-label }} to production"
