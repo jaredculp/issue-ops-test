@@ -2,6 +2,9 @@ name: CI
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
   build:
@@ -41,7 +44,7 @@ jobs:
         run: |
           echo 'ISSUE_BODY<<EOF' >> $GITHUB_ENV
           gh issue view "$GH_ISSUE" --json "body" --jq ".body" >> $GITHUB_ENV
-          echo "- [ ] ${{ needs.build.outputs.build-label }}" >> $GITHUB_ENV
+          echo "- [ ] ${{ needs.build.outputs.build-label }} by @${{ github.event.head_commit.committer.username }}" >> $GITHUB_ENV
           echo 'EOF' >> $GITHUB_ENV
 
       - name: Update issue
