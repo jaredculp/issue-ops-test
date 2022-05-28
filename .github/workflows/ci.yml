@@ -44,7 +44,7 @@ jobs:
         run: |
           echo 'ISSUE_BODY<<EOF' >> $GITHUB_ENV
           gh issue view "$GH_ISSUE" --json "body" --jq ".body" >> $GITHUB_ENV
-          echo "- [ ] ${{ needs.build.outputs.build-label }} by @${{ github.event.head_commit.committer.username }}" >> $GITHUB_ENV
+          echo "- [ ] ${{ needs.build.outputs.build-label }} by @${{ github.event.head_commit.author.username }}" >> $GITHUB_ENV
           echo 'EOF' >> $GITHUB_ENV
 
       - name: Update issue
