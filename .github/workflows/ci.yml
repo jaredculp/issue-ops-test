@@ -50,4 +50,4 @@ jobs:
       - name: Update issue
         if: ${{ env.GH_ISSUE }}
         run: |
-          echo "$ISSUE_BODY" | gh issue edit $GH_ISSUE --body-file -
+          echo "$ISSUE_BODY" | gh issue edit $GH_ISSUE --body-file - --add-assignee ${{ github.event.head_commit.author.username }}
