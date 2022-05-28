@@ -12,6 +12,8 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
+      - uses: actions/checkout@v3
+      
       - name: Deploy
         if: ${{ !github.event.issue.pull_request }} && contains(github.event.comment.body, "/deploy")
         run: |
