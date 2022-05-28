@@ -31,7 +31,10 @@ jobs:
       - name: Create issue
         if: ${{ !env.GH_ISSUE }}
         run: |
-          gh issue create --label deploy-prod --body "# Since deploying ${{ needs.build.outputs.build-label }} to production"
+          gh issue create \
+          --label deploy-prod \
+          --title "Deployment Approvals" \
+          --body "# Since deploying ${{ needs.build.outputs.build-label }} to production"
 
       - name: Get current issue body
         if: ${{ env.GH_ISSUE }}
