@@ -1,0 +1,23 @@
+name: deploy
+
+on:
+  issue_comment:
+    types:
+      - created
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Deploy
+        if: ${{ github.event.comment.body == "/deploy" }}
+        run: |
+          echo "Deploying!"
+        
+      - name: Close issue
+        if: ${{ github.event.comment.body == "/deploy" }}
+        run: |
+          gh issue close ${{ github.event.issue.number }} --comment "Successfully deployed!"
